@@ -31,16 +31,19 @@ public class Game {
 
     private Handler handler;
 
-    public Game(InGameActivity g){
+    public Game(InGameActivity g, Handler handler){
         gameActivity= g;
         niveau= 1;
         score= 0; invincible = false;
         meteores= new ArrayList<Meteores>();
         state= false;
         timer= new Timer();
-        handler= new Handler();
+        obst_speed= 1;
+
+        this.handler= handler;
 
         startGame();
+
     }
     public void startGame(){
         vaisseau= new VaisseauView(this);
@@ -66,7 +69,7 @@ public class Game {
     private void runMeteoresManager() {
         MeteoresTasks metTask= new MeteoresTasks(this, handler);
 
-        timer.schedule(metTask, 0, 500);
+        timer.schedule(metTask, 0, 10);
         //handler.postDelayed(updateMeteoreTask,1000);
     }
 
@@ -175,7 +178,6 @@ public class Game {
         //repaintMeteores();
         //vaisseau.repaint();
         //repaintBackground();
-        gameActivity.repaint();
     }
     public void repaintMeteores(){
         for(int i=0; i<meteores.size(); i++) meteores.get(i).repaint();

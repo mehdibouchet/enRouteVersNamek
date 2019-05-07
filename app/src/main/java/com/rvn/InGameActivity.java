@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,11 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.Timer;
+
 public class InGameActivity extends AppCompatActivity {
     public static Context mContext;
     public RelativeLayout gameLayout;
     private Game g;
-
+    private Handler handler;
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -28,7 +31,24 @@ public class InGameActivity extends AppCompatActivity {
 
         gameLayout= findViewById(R.id.gameLayout);
         mContext= gameLayout.getContext();
-        g= new Game(this);
+        handler= new Handler();
+        g= new Game(this, handler);
+
+        /*Timer timer= new Timer();
+        timer.schedule(new TimerTask(){
+            @Override
+            public void run() { repaint(); }
+            }, 500);
+        new Thread(new Runnable(){
+            @Override
+            public void run() { while(true){
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                } }
+        }); */
     }
 
     public void showEndGame(){

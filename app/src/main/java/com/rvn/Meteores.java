@@ -1,5 +1,6 @@
 package com.rvn;
 
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -7,6 +8,7 @@ import android.view.animation.RotateAnimation;
 
 import static com.rvn.InGameActivity.*;
 import static com.rvn.Functions.*;
+import static java.lang.Math.abs;
 
 public class Meteores extends ObjectView {
     public float speed, size;
@@ -44,21 +46,26 @@ public class Meteores extends ObjectView {
         }*/
     }
     public void updatePosition() {
-        int x= this.x,y= this.y;
+        int xPos= this.x;
+        int yPos= this.y;
         int xvais = game.vaisseau.x;    float dx= xvais - this.x;
         int yvais = game.vaisseau.y;    float dy= yvais - this.y;
         float a= dy/dx;
 
-        float x2= this.x, y2= this.y*a;
-        while(y2<1){ x2*= 10; y2*= 10; }
+        float x2= 1, y2= a;
 
-        if( dx < 0) x-= (int) speed*x2;
-        else        x+= (int) speed*x2;
+        if(abs(y2)<1){ float b= 1/y2; x2*= b; y2= 1; }
 
-        if( dy < 0) y-= (int) speed*y2;
-        else        y+= (int) speed*y2;
+        x2*= speed*1; y2*= speed*1;
+        if( dx < 0) xPos-= Math.round(x2);
+        else        xPos+= Math.round(x2);
 
-        setPosition(x, y);
+        if( dy < 0) yPos-= Math.round(y2);
+        else        yPos+= Math.round(y2);
+
+        Log.i("CC", Float.toString(x2));
+        Log.i("CC", Float.toString(y2));
+        setPosition(xPos, yPos);
     }
     public boolean isOut(){
         if( y-h/2 > HEIGHT ||

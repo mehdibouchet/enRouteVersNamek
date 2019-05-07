@@ -55,12 +55,15 @@ public class MeteoresTasks extends TimerTask {
         if(!taskBeingRunning){
             handler.removeCallbacksAndMessages(null);
             initNewTask(); startTask();
-        }
+        }/*
         if(updatePosition == 2){
             game.updateState();
             updatePosition= -1;
         }
         updatePosition++;
+        */
+        game.updateState();
+
     }
 
     private void runContinueMeteoreTask(int seconde, final int nbMeteores){
