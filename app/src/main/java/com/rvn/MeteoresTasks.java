@@ -1,12 +1,9 @@
 package com.rvn;
 
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 
 import java.util.TimerTask;
-
-import static com.rvn.Game.MAX_METEORES;
 
 public class MeteoresTasks extends TimerTask {
     private Game game;
@@ -52,18 +49,21 @@ public class MeteoresTasks extends TimerTask {
 
     @Override
     public void run() {
-        if(!taskBeingRunning){
-            handler.removeCallbacksAndMessages(null);
-            initNewTask(); startTask();
-        }/*
-        if(updatePosition == 2){
-            game.updateState();
-            updatePosition= -1;
-        }
-        updatePosition++;
-        */
+        if (game.state){
+            if (!taskBeingRunning) {
+                handler.removeCallbacksAndMessages(null);
+                initNewTask();
+                startTask();
+            }/*
+            if(updatePosition == 2){
+                game.updateState();
+                updatePosition= -1;
+            }
+            updatePosition++;
+            */
         game.updateState();
-
+        Log.i("cc","i");
+        }
     }
 
     private void runContinueMeteoreTask(int seconde, final int nbMeteores){

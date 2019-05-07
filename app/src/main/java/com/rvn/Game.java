@@ -1,12 +1,11 @@
 package com.rvn;
 
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.os.Handler;
 
 public class Game {
 
@@ -48,23 +47,19 @@ public class Game {
     public void startGame(){
         vaisseau= new VaisseauView(this);
         gameActivity.addView(vaisseau);
-
+        //vaisseau.centerView();
+        //addMeteore(1);
         runMeteoresManager();
         //runTimerManager();
+
         state= true;
     }
     private void runTimerManager() {
         timer.schedule(new TimerTask() {
             int min=1;
             @Override
-            public void run() {
-                if(state) {
-                    if(min == 10){   time++; min =1; Log.v(TAG, Integer.toString(time)); }
-                    updateState();
-                    if(hasCollision()) showEndGame();
-                }
-            }
-        }, 0, 100);
+            public void run() { time++; Log.v(TAG, Integer.toString(time)); }
+        }, 0, 1000);
     }
     private void runMeteoresManager() {
         MeteoresTasks metTask= new MeteoresTasks(this, handler);
@@ -114,7 +109,8 @@ public class Game {
 
     public boolean hasCollision(){
         for(int i=0; i<meteores.size(); i++){
-            if( meteores.get(i).hasCollision(this) ) return true;
+            if( meteores.get(i).hasCollision() )
+                return true;
         }
         return false;
     }
@@ -125,7 +121,8 @@ public class Game {
         for(int i=0; i<meteores.size();i++){
             Meteores meteore= meteores.get(i);
             meteore.updatePosition();
-            if(meteore.isOut()) removeMeteore(meteore);
+            //if(meteore.isOut() &&) removeMeteore(meteore);
+            if(meteore.hasCollision()) showEndGame();
         }
     }
     public void updateState(){
@@ -190,7 +187,6 @@ public class Game {
             public void run() {
              removeMeteore(m);
              score++;
-             repaintMeteores();
             }
         });
 
