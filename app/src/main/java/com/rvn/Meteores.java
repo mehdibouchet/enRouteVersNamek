@@ -10,13 +10,11 @@ import static com.rvn.Functions.*;
 
 public class Meteores extends ObjectView {
     public float speed, size;
-    private Game game;
 
     public Meteores(Game g, float sp, float size){
-        super(mContext, R.drawable.meteore, (int) size*150, (int) size*150, 300, 300);
+        super(mContext, g, R.drawable.meteore, (int) size*150, (int) size*150, 0, 0);
         this.size= size; this.speed= sp;
         //startRotation(3000);
-        game= g;
 
         final Meteores met= this;
         this.setOnClickListener(new OnClickListener() {
@@ -46,17 +44,21 @@ public class Meteores extends ObjectView {
         }*/
     }
     public void updatePosition() {
-        int xvais = game.vaisseau.x;    int dx= xvais - x;
-        int yvais = game.vaisseau.y;    int dy= yvais - y;
-        int a= dy/dx;
-        int x2= 1, y2=a;
+        int x= this.x,y= this.y;
+        int xvais = game.vaisseau.x;    float dx= xvais - this.x;
+        int yvais = game.vaisseau.y;    float dy= yvais - this.y;
+        float a= dy/dx;
+
+        float x2= this.x, y2= this.y*a;
         while(y2<1){ x2*= 10; y2*= 10; }
 
-        if( dx < 0) x-= speed*x2;
-        else        x+= speed*x2;
+        if( dx < 0) x-= (int) speed*x2;
+        else        x+= (int) speed*x2;
 
-        if( dy < 0) y-= speed*y2;
-        else        y+= speed*y2;
+        if( dy < 0) y-= (int) speed*y2;
+        else        y+= (int) speed*y2;
+
+        setPosition(x, y);
     }
     public boolean isOut(){
         if( y-h/2 > HEIGHT ||

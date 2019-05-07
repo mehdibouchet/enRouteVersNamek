@@ -12,19 +12,23 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class InGameActivity extends AppCompatActivity {
     public static Context mContext;
-    public LinearLayout gameLayout;
+    public RelativeLayout gameLayout;
+    private Game g;
 
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.ingame_layout);
 
-        mContext= this;
+
+
         gameLayout= findViewById(R.id.gameLayout);
-        Game g= new Game(this);
+        mContext= gameLayout.getContext();
+        g= new Game(this);
     }
 
     public void showEndGame(){
@@ -46,7 +50,7 @@ public class InGameActivity extends AppCompatActivity {
         return (int)( px / ((float) mContext.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT) );
     }
 
-    public void addMeteoreView(Meteores meteore){ gameLayout.addView(meteore); gameLayout.invalidate();   }
-    public void removeMeteoreView(Meteores meteore){ gameLayout.removeView(meteore); gameLayout.invalidate();}
-
+    public void addView(ObjectView view){ gameLayout.addView(view); repaint();   }
+    public void removeView(ObjectView view){ gameLayout.removeView(view); repaint(); }
+    public void repaint(){ gameLayout.invalidate(); }
 }

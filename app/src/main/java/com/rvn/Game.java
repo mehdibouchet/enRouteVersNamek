@@ -43,7 +43,9 @@ public class Game {
         startGame();
     }
     public void startGame(){
-        //addMeteore(1);
+        vaisseau= new VaisseauView(this);
+        gameActivity.addView(vaisseau);
+
         runMeteoresManager();
         //runTimerManager();
         state= true;
@@ -63,42 +65,48 @@ public class Game {
     }
     private void runMeteoresManager() {
         MeteoresTasks metTask= new MeteoresTasks(this, handler);
-        timer.schedule(metTask, 0, 100);
+
+        timer.schedule(metTask, 0, 500);
+        //handler.postDelayed(updateMeteoreTask,1000);
     }
 
-    public void addMeteore(int nb){ addMeteore(nb,1,obst_speed); }
-    public void addMeteore(int nb, float size, float speed){                //méthode pour ajouter des météores
+    public void addMeteore(int nb){ addMeteore(nb,obst_speed,1); }
+    public void addMeteore(int nb, float speed, float size){                //méthode pour ajouter des météores
 
         int nbObstacle= meteores.size();
-        nb= (nb > MAX_METEORES-nbObstacle ? MAX_METEORES-nbObstacle : nb);
+        //nb= (nb > MAX_METEORES-nbObstacle ? MAX_METEORES-nbObstacle : nb);
         for(int i=nbObstacle; i<nbObstacle+nb;i++) {
-            Meteores meteore= new Meteores(this);
+            Meteores meteore= new Meteores(this, speed, size);
             meteores.add(meteore);          //remplissage du tableau de météores
-            gameActivity.addMeteoreView(meteore);
+            gameActivity.addView(meteore);
         }
         //repaintMeteores();
     }
-    public void deleteMeteore() {  //méthode de suppresion de météore à certains niveau du jeu
-        deleteMeteore(-1);
+    public void removeMeteore() {  //méthode de suppresion de météore à certains niveau du jeu
+        removeMeteore(-1);
     }
-    public void deleteMeteore(Meteores m) {  //méthode de suppresion de météore à certains niveau du jeu
+    public void removeMeteore(Meteores m) {  //méthode de suppresion de météore à certains niveau du jeu
         meteores.remove(m);
-        gameActivity.removeMeteoreView(m);
+        gameActivity.removeView(m);
     }
 
     // TO EDIT
-    public void deleteMeteore(int nb) {
+    public void removeMeteore(int nb) {
         int nbObstacle= meteores.size();
         if (nb == -1) {
-            for(int i = 0; i < nbObstacle; i++)
-                meteores.remove(0);
+            for(int i = 0; i < nbObstacle; i++) {
+                Meteores m= meteores.get(0);
+                removeMeteore(m);
+            }
             return;
         }
         if(nbObstacle<nb)
             nb=nbObstacle;
 
-        for(int i=nbObstacle;i>nbObstacle-nb;i--)
-            meteores.remove(i);
+        for(int i=nbObstacle;i>nbObstacle-nb;i--) {
+            Meteores m= meteores.get(nbObstacle);
+            removeMeteore(m);
+        }
     }
 
     public boolean hasCollision(){
@@ -108,17 +116,17 @@ public class Game {
         return false;
     }
 
-    public void updatePosition(){}
+    public void updateLevel(){}
     public void updateBackgroundPosition(){}
     public void updateMeteoresPosition(){
         for(int i=0; i<meteores.size();i++){
             Meteores meteore= meteores.get(i);
             meteore.updatePosition();
-            if(meteore.isOut()) meteores.remove(meteore);
+            if(meteore.isOut()) removeMeteore(meteore);
         }
     }
     public void updateState(){
-        updatePosition(); updateBackgroundPosition(); repaint();
+        updateMeteoresPosition(); repaint(); //updateBackgroundPosition(); repaint();
     }
     public void updateNiveau(){                                  //mise à jour du niveauen fonction du temps
         /*int ex_niv = niveau;
@@ -142,10 +150,32 @@ public class Game {
 
     public void showEndGame(){ state= false; gameActivity.showEndGame(); }
 
+    public int getMaxMeteore(){
+        int maxMeteore;
+        switch(niveau){
+            case 1:   maxMeteore= 5; break;
+            case 2:   maxMeteore= 8; break;
+            case 3:   maxMeteore= 10;break;
+            default:  maxMeteore= 7; break;
+        }
+        return maxMeteore;
+    }
+    public int getMs(){
+        int ms;
+        switch(niveau){
+            case 1:   ms= 5000; break;//ms= (int) Math.floor( Math.random()*999 +1 ); break;   //0-1000ms
+            case 2:   ms= 2000; break;//(int) Math.floor( 2*(Math.random()*999* +1 ) ); break;   //0-2000ms
+            case 3:   ms= 1000; break;
+            default:  ms= 1500; break;
+        }
+        return ms;
+    }
+
     public void repaint(){
-        repaintMeteores();
-        vaisseau.repaint();
-        repaintBackground();
+        //repaintMeteores();
+        //vaisseau.repaint();
+        //repaintBackground();
+        gameActivity.repaint();
     }
     public void repaintMeteores(){
         for(int i=0; i<meteores.size(); i++) meteores.get(i).repaint();
@@ -156,7 +186,7 @@ public class Game {
         handler.post(new Runnable(){
          @Override
             public void run() {
-             deleteMeteore(m);
+             removeMeteore(m);
              score++;
              repaintMeteores();
             }

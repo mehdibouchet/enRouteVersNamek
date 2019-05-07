@@ -8,47 +8,56 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import static com.rvn.InGameActivity.mContext;
+
 
 public abstract class ObjectView extends View {
     protected int h,w;
     protected int x,y;
     protected Bitmap img;
+    protected Game game;
 
     private final Paint mPaint = new Paint();
     private final Point mSize = new Point();
     private final Point mStartPosition = new Point();
 
-    private ViewGroup.LayoutParams params;
+    private RelativeLayout.LayoutParams params;
 
     public ObjectView(Context context) {
         super(context);
     }
-    public ObjectView(Context context, int img, int h, int w){
-        super(context); init(img, h, w);
+    public ObjectView(Context context, Game g, int img, int h, int w){
+        super(context); init(g, img, h, w);
     }
-    public ObjectView(Context context, int img, int h, int w, int x, int y){
-        super(context); init(img, h, w, x, y);
+    public ObjectView(Context context, Game g, int img, int h, int w, int x, int y){
+        super(context); init(g, img, h, w, x, y);
     }
 
-    public void init(int img, int h, int w){
+    public void init(Game g, int img, int h, int w){
         Bitmap image= BitmapFactory.decodeResource(getResources(), img);
-        params= new ViewGroup.LayoutParams(h, w);
-
+        params= new RelativeLayout.LayoutParams(h, w);
+        this.game= g;
         setImage(image);
         setSize(h, w);
         setBackgroundColor(0xFF00FF00);
+
+        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        setPosition(metrics.widthPixels/2, metrics.heightPixels/2);
     }
-    public void init(int img, int h, int w, int x, int y){
-        init(img, h, w); setPosition(x,y);
+    public void init(Game g, int img, int h, int w, int x, int y){
+        init(g,img, h, w); setPosition(x,y);
     }
 
     protected void setImage(Bitmap img){ this.img= img; int w= img.getWidth(); int h= img.getHeight(); setSize(h,w); }
     protected void setImage(int img){ setImage(BitmapFactory.decodeResource(getResources(), img)); }
     protected void setSize(int h, int w){
-        ViewGroup.LayoutParams newParams= new ViewGroup.LayoutParams( params );
+        RelativeLayout.LayoutParams newParams= new RelativeLayout.LayoutParams( params );
         newParams.height= h; newParams.width= w;
         setLayoutParams(newParams);
         this.img= Bitmap.createScaledBitmap(img, w, h, false);
@@ -72,7 +81,7 @@ public abstract class ObjectView extends View {
         return false;
     }
 
-        public void repaint(){ this.invalidate(); }
+    public void repaint(){ this.invalidate(); }
 
     @Override
     public void onDraw(Canvas canvas){
