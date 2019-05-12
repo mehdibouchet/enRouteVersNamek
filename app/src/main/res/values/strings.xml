@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">EnRouteJeu</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">En route vers Namek</string>
+    <string name="chrono">Temps</string>
+    <string name="level">Niveau</string>
+    <string name="score">Score</string>
 </resources>

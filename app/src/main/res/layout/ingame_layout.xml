@@ -7,6 +7,4 @@
     android:id="@+id/gameLayout"
     tools:context=".InGameActivity"
     android:background="@drawable/background_star"
-    android:orientation="vertical">
-
-</RelativeLayout>
+    android:orientation="vertical"/>

@@ -9,6 +9,7 @@ import static com.rvn.InGameActivity.HEIGHT;
 import static com.rvn.InGameActivity.WIDTH;
 import static com.rvn.InGameActivity.mContext;
 import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
 
 public class Meteores extends ObjectView {
     public float speed, size;
@@ -16,12 +17,12 @@ public class Meteores extends ObjectView {
     public Meteores(Game g, float sp, float size){
         super(mContext, g, R.drawable.meteore, (int) size*150, (int) size*150);
         this.size= size; this.speed= sp;
-        //startRotation(3000);
+        startRotation(4000);
 
         final Meteores met= this;
         this.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) { game.onClickMeteore(met ); }
+            public void onClick(View v) { clearAnimation(); game.onClickMeteore(met); }
         });
 
         generatePosition();
@@ -29,7 +30,7 @@ public class Meteores extends ObjectView {
     public Meteores(Game g){  this(g,1,1);  }
 
     public void generatePosition(){
-        boolean is_left_and_right_pop=  ( ((int) (Math.random() * 4)) == 1);
+        boolean is_left_and_right_pop=  true;//( ((int) (Math.random() * 3)) == 1);
         boolean is_top_or_left_pop=     ( ((int) (Math.random() * 2)) == 1);
         float x,y;
         if(is_left_and_right_pop){
@@ -47,22 +48,17 @@ public class Meteores extends ObjectView {
         setPosition(x,y);
     }
     public void updatePosition() {
-        float xPos= this.x;
-        float yPos= this.y;
-        float xvais = game.vaisseau.x;    float dx= xvais - this.x;
-        float yvais = game.vaisseau.y;    float dy= yvais - this.y;
-        float a= dy/dx;
+        float x= this.x;
+        float y= this.y;
 
-        float x2= 1, y2= a;
+        double dx = game.vaisseau.x-x, dy = game.vaisseau.y-y;
+        double dist = Math.pow(dx,2)+Math.pow(dy,2);
 
-        if(abs(y2)<1){ float b= 1/y2; x2*= b; y2= 1; }
+        double normx = dx/sqrt(dist);
+        double normy = dy/sqrt(dist);
 
-        x2*= speed*0.5; y2*= speed*0.5;
-        if( dx < 0) xPos-= x2;
-        else        xPos+= x2;
-
-        if( dy < 0) yPos-= y2;
-        else        yPos+= y2;
+        float xPos = x + ( (float) ((normx)*speed ));
+        float yPos = y + ( (float) ((normy)*speed ));
 
         setPosition(xPos, yPos);
     }
@@ -76,7 +72,7 @@ public class Meteores extends ObjectView {
     }
 
     public void startRotation(int ms){
-        RotateAnimation rotate = new RotateAnimation(0.0f, 360.0f,
+        RotateAnimation rotate = new RotateAnimation(0, 360f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(ms);

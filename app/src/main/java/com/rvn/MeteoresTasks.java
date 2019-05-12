@@ -1,6 +1,7 @@
 package com.rvn;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.TimerTask;
@@ -12,7 +13,7 @@ public class MeteoresTasks extends TimerTask {
     private int nbMeteores;
     private int ms;
     private int updatePosition;
-
+    private int i;
     final private int PAUSE_ALEA= 1500;
 
     private boolean taskBeingRunning;
@@ -22,12 +23,12 @@ public class MeteoresTasks extends TimerTask {
         this.taskBeingRunning= false;
         this.handler= handler;
         this.updatePosition= 0;
+        i=1;
     }
     private void initNewTask(){
-        //choiceTask= (int) Math.floor( Math.random()*3 );
-        choiceTask= 1;
-        nbMeteores= (int) Math.floor( Math.random()*(game.getMaxMeteore())+1 );
-        ms= game.getMs();
+        choiceTask= 0;  //(int) Math.floor( Math.random()*3 );
+        nbMeteores= 5;  //(int) Math.floor( Math.random()*(game.getMaxMeteore())+1 );
+        ms= game.getWaveDuration();
     }
 
     public void startTask(){
@@ -35,8 +36,8 @@ public class MeteoresTasks extends TimerTask {
         int pauseBetweenWaves= (choiceTask == 0 || choiceTask == 2 ? ms+ 2000 : ms/2);
 
         switch(choiceTask){
-            case 0: runContinueMeteoreTask(ms, 8); break;
-            case 1: runEveryMeteoreTask(3); break;
+            case 0: runContinueMeteoreTask(ms, nbMeteores); break;
+            case 1: runEveryMeteoreTask(nbMeteores); break;
             case 2: runAleatoireMeteoreTask(ms, nbMeteores); break;
         }
 
@@ -49,20 +50,11 @@ public class MeteoresTasks extends TimerTask {
 
     @Override
     public void run() {
-        if (game.state){
-            if (!taskBeingRunning) {
-                handler.removeCallbacksAndMessages(null);
-                initNewTask();
-                startTask();
-            }/*
-            if(updatePosition == 2){
-                game.updateState();
-                updatePosition= -1;
-            }
-            updatePosition++;
-            */
-        game.updateState();
-        Log.i("cc","i");
+        if (game.state && !taskBeingRunning){
+             //handler.removeCallbacksAndMessages(null);
+            initNewTask();
+            startTask();
+            i++;
         }
     }
 

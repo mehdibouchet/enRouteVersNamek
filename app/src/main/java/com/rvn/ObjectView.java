@@ -41,8 +41,8 @@ public abstract class ObjectView extends View {
         this.game= g;
         setImage(image);
         setSize(h, w);
-        setBackgroundColor(0xFF00FF00);
-        setPosition((WIDTH-w)/2, (HEIGHT-h)/2);
+        //setBackgroundColor(0xFF00FF00);
+        setPosition((WIDTH-w)/2, (HEIGHT-2*h)/2);
     }
     public void init(Game g, int img, int h, int w, float x, float y){
         init(g,img, h, w); setPosition(x,y);
@@ -59,7 +59,11 @@ public abstract class ObjectView extends View {
     }
     protected void setPosition(float x, float y){
         this.x= x; this.y= y;
-        setX(x); setY(y);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(this.params); //WRAP_CONTENT param can be FILL_PARENT
+        params.leftMargin = (int) x; //XCOORD
+        params.topMargin = (int) y; //YCOORD
+        setLayoutParams(params);
+        //setX(x); setY(y);
     }
 
     public boolean hasCollision()                                   //méthode pour savoir si le vaisseau touche un météore
@@ -95,4 +99,5 @@ public abstract class ObjectView extends View {
 
 /*
     https://stackoverflow.com/questions/4837715/how-to-resize-a-bitmap-in-android
+    https://stackoverflow.com/questions/16782705/android-setx-and-sety-behaving-weird
  */
