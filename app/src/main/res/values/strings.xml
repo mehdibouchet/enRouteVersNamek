@@ -1,6 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">En route vers Namek</string>
     <string name="chrono">Temps</string>
     <string name="level">Niveau</string>
     <string name="score">Score</string>
+    <string name="saveScore">Sauvegarder votre score ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="saveName">Votre Pseudo ?</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
 </resources>

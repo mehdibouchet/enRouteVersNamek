@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -20,8 +19,6 @@ public abstract class ObjectView extends View {
     protected Game game;
 
     private final Paint mPaint = new Paint();
-    private final Point mSize = new Point();
-    private final Point mStartPosition = new Point();
 
     private RelativeLayout.LayoutParams params;
 
@@ -41,7 +38,6 @@ public abstract class ObjectView extends View {
         this.game= g;
         setImage(image);
         setSize(h, w);
-        //setBackgroundColor(0xFF00FF00);
         setPosition((WIDTH-w)/2, (HEIGHT-2*h)/2);
     }
     public void init(Game g, int img, int h, int w, float x, float y){
@@ -50,6 +46,7 @@ public abstract class ObjectView extends View {
 
     protected void setImage(Bitmap img){ this.img= img; int w= img.getWidth(); int h= img.getHeight(); setSize(h,w); }
     protected void setImage(int img){ setImage(BitmapFactory.decodeResource(getResources(), img)); }
+
     protected void setSize(int h, int w){
         RelativeLayout.LayoutParams newParams= new RelativeLayout.LayoutParams( params );
         newParams.height= h; newParams.width= w;
@@ -63,15 +60,14 @@ public abstract class ObjectView extends View {
         params.leftMargin = (int) x; //XCOORD
         params.topMargin = (int) y; //YCOORD
         setLayoutParams(params);
-        //setX(x); setY(y);
     }
 
-    public boolean hasCollision()                                   //méthode pour savoir si le vaisseau touche un météore
-    {
-        VaisseauView vaisseau= game.vaisseau;
-        float vx= vaisseau.x; float vy= vaisseau.y;
-        int vw= vaisseau.w, vh= vaisseau.h;
-
+    public boolean hasCollision(){                                   //méthode pour savoir si le vaisseau touche un météore
+        return hasCollision(game.vaisseau);
+    }
+    public boolean hasCollision(ObjectView m){                                   //méthode pour savoir si le vaisseau touche un météore
+    float vx= m.x; float vy= m.y;
+        int vw= m.w, vh= m.h;
         if(x+w/2>vx-vw/2
                 && x-w/2<vx+vw/2
                 && y+h/2>vy-vh/2
@@ -80,15 +76,6 @@ public abstract class ObjectView extends View {
         return false;
     }
 
-    public void centerView(){
-        RelativeLayout.LayoutParams params= (RelativeLayout.LayoutParams) getLayoutParams();
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        setLayoutParams(params);
-        requestLayout();
-        x= getX(); y=getY();
-
-    }
     public void repaint(){ this.invalidate(); }
 
     @Override

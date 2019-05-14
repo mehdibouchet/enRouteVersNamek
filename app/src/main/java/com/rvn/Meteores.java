@@ -25,25 +25,31 @@ public class Meteores extends ObjectView {
             public void onClick(View v) { clearAnimation(); game.onClickMeteore(met); }
         });
 
-        generatePosition();
+        do
+            generatePosition();
+        while(g.hasCollision(this));
     }
     public Meteores(Game g){  this(g,1,1);  }
 
     public void generatePosition(){
-        boolean is_left_and_right_pop=  true;//( ((int) (Math.random() * 3)) == 1);
+        boolean is_left_and_right_pop=  ( ((int) (Math.random() * 3)) == 1);
         boolean is_top_or_left_pop=     ( ((int) (Math.random() * 2)) == 1);
+
         float x,y;
+        float randX= (float)(Math.random()*(WIDTH/2));
+        float randY= (float)(Math.random()*(HEIGHT/2));
+
         if(is_left_and_right_pop){
             //Si le meteore pop a gauche
-            if(is_top_or_left_pop){     x= -w; y= (float) (Math.random()*(HEIGHT)); }
+            if(is_top_or_left_pop){     x= -w- randX; y= (float) (Math.random()*(HEIGHT)); }
             //Si le meteore pop a droite
-            else{ x= WIDTH+w; y= (float) (Math.random()*(HEIGHT)); }
+            else{ x= WIDTH+w+randX; y= (float) (Math.random()*(HEIGHT)); }
         }
         else{
             //Si le meteore pop au top
-            if(is_top_or_left_pop){     x= (int) (Math.random()*(HEIGHT)); y=-h; }
+            if(is_top_or_left_pop){     x= (int) (Math.random()*(HEIGHT)); y=-h-randY; }
             //Si le meteore pop a droite
-            else{ x= (int) (Math.random()*(HEIGHT)); y=HEIGHT+h; }
+            else{ x= (int) (Math.random()*(HEIGHT)); y=HEIGHT+h+randY; }
         }
         setPosition(x,y);
     }
@@ -83,6 +89,7 @@ public class Meteores extends ObjectView {
 
 /*
 
+https://openclassrooms.com/forum/sujet/java-2d-deplacer-un-personnage-d-un-point-a-un-autre-78794
 https://codeday.me/bug/20180521/167079.html
 
 

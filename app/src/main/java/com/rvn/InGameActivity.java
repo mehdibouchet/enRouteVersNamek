@@ -1,6 +1,7 @@
 package com.rvn;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,11 +11,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,10 +32,16 @@ public class InGameActivity extends AppCompatActivity {
     public RelativeLayout gameLayout;
     private Game g;
     private Handler handler;
-    private TextView scoreView, levelView;
+    private TextView scoreView, levelView, highscoreView;
+
     private Chronometer chronoView;
     private Timer timer;
 
+    private AlertDialog.Builder builder;
+    private DialogInterface.OnClickListener saveHSListener, confirmHSListener ;
+    private EditText namePlayer;
+
+    private DatabaseAdapter dbAdapter;
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -42,19 +52,63 @@ public class InGameActivity extends AppCompatActivity {
         HEIGHT= Resources.getSystem().getDisplayMetrics().heightPixels;
 
         mContext= gameLayout.getContext();
+        builder= new AlertDialog.Builder(mContext);
 
         handler= new Handler(Looper.getMainLooper());
         timer= new Timer();
+
+        dbAdapter= new DatabaseAdapter(mContext);
+
         setGameViews();
+        setListeners();
 
         g= new Game(this, handler, chronoView);
         startGame();
-
         }
+    private void setListeners(){
+        confirmHSListener= new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE: showSaveNameModal(); break;
+                    case DialogInterface.BUTTON_NEGATIVE: showEndGameActivity(); break;
+                }
+            }
+        };
+        saveHSListener= new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE: saveHighscore(); break;
+                    case DialogInterface.BUTTON_NEGATIVE: break;
+                }
+                showEndGameActivity();
+            }
+        };
+    }
+    private void showSaveNameModal(){
+        builder.setMessage(getString(R.string.saveName))
+                .setPositiveButton(R.string.save,saveHSListener)
+                .setNegativeButton(R.string.cancel, saveHSListener);
+
+        namePlayer = new EditText(mContext);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        namePlayer.setLayoutParams(lp);
+        builder.setView(namePlayer);
+
+        builder.show();
+    }
 
     private void startGame(){
         g.startGame();
         showLevel(); showScore();
+    }
+    private void saveHighscore(){
+        Highscore highscore= new Highscore( namePlayer.getText().toString(), g.getScore() );
+        dbAdapter.open();
+        dbAdapter.addHighscore(highscore);
     }
     public void setGameViews(){
         scoreView= new TextView(this);
@@ -70,12 +124,17 @@ public class InGameActivity extends AppCompatActivity {
         gameLayout.addView(levelView);
 
         chronoView= new Chronometer(this);
-        chronoView.setFormat("Temps \n %s"); chronoView.setTextColor(Color.WHITE);
+        chronoView.setFormat(getString(R.string.chrono)+ "\n %s"); chronoView.setTextColor(Color.WHITE);
         chronoView.setTextSize(20); chronoView.setGravity(Gravity.CENTER);
         chronoView.setX(WIDTH-200); chronoView.setY(pixelsToDp(10));
         gameLayout.addView(chronoView);
     }
-    public void showEndGame(){
+
+    public void showEndGameModal(){
+        builder.setMessage(R.string.saveScore).setPositiveButton(R.string.yes, confirmHSListener)
+                .setNegativeButton(R.string.no, confirmHSListener).show();
+    }
+    public void showEndGameActivity(){
         Intent eg= new Intent(this, HighscoreActivity.class);
         startActivity(eg);
     }
@@ -84,10 +143,10 @@ public class InGameActivity extends AppCompatActivity {
     public void removeView(ObjectView view){ gameLayout.removeView(view); }
 
     public void showScore(){
-        scoreView.setText( "Score\n"+g.getScore() );
+        String text= getString(R.string.score)+"\n"+g.getScore(); scoreView.setText( text );
     }
     public void showLevel(){
-        levelView.setText( "Level\n"+g.getLevel() );
+        String text= getString(R.string.level)+"\n"+g.getLevel(); levelView.setText( text );
     }
     public void repaint(){
         runOnUiThread(new TimerTask() {
@@ -127,5 +186,7 @@ public class InGameActivity extends AppCompatActivity {
 /*
 
 https://abhiandroid.com/ui/chronometer
+https://stackoverflow.com/questions/14678593/the-application-may-be-doing-too-much-work-on-its-main-thread
+https://stackoverflow.com/questions/47041396/only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-views
 
  */

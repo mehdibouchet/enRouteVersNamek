@@ -14,9 +14,7 @@ public class Game {
     public ArrayList<Meteores> meteores;
     private int score;
     private Timer timer;
-    private int time;
     public int niveau;
-    private float bg_speed;
     private float obst_speed;
     public boolean state;
 
@@ -25,11 +23,8 @@ public class Game {
     private Chronometer chrono;
 
     private InGameActivity gameActivity;
-    private final String TAG="Game";
 
-    public boolean isMeteoreTaskActive= false;
 
-    public static final int MAX_METEORES= 4;
 
     private Handler handler;
 
@@ -50,7 +45,6 @@ public class Game {
     }
     public void startGame(){
         addView(vaisseau);
-        //addMeteore(1);
 
         runMeteoresManager();
         runUpdateManager();
@@ -70,7 +64,7 @@ public class Game {
                     gameActivity.updateMeteoresPosition();
             }
         };
-        (new Timer()).scheduleAtFixedRate(metTask, 0, 10);
+        timer.scheduleAtFixedRate(metTask, 0, 10);
     }
     public void addMeteore(int nb){ addMeteore(nb,obst_speed,1); }
     public void addMeteore(int nb, float speed, float size){                //méthode pour ajouter des météores
@@ -81,15 +75,12 @@ public class Game {
             meteores.add(meteore);          //remplissage du tableau de météores
             addView(meteore);
         }
-        //repaintMeteores();
     }
 
     public void removeMeteore(Meteores m) {  //méthode de suppresion de météore à certains niveau du jeu
         meteores.remove(m);
         removeView(m);
     }
-
-    // TO EDIT
     public void removeMeteore(int nb) {
         int nbObstacle= meteores.size();
         if (nb == -1) {
@@ -108,14 +99,14 @@ public class Game {
         }
     }
 
-    public boolean hasCollision(){
+    public boolean hasCollision(){ return hasCollision(vaisseau); }
+    public boolean hasCollision(ObjectView m){
         for(int i=0; i<meteores.size(); i++){
-            if( meteores.get(i).hasCollision() )
+            if( meteores.get(i).hasCollision(m) )
                 return true;
         }
         return false;
     }
-
     public void updateLevel(){
         if( score > 20 && niveau == 1)
             niveau++;
@@ -132,18 +123,19 @@ public class Game {
         for(int i=0; i<meteores.size();i++){
             Meteores meteore= meteores.get(i);
             meteore.updatePosition();
-            //if(meteore.isOut() &&) removeMeteore(meteore);
             if(meteore.hasCollision()) showEndGame();
         }
     }
     public void endGame(){
-        removeMeteore(-1);
-    }
-    public void showEndGame(){
+        state= false; chrono.stop();
+        //timer.cancel(); timer=null;
         clearAnimation();
-        //endGame();
-        state= false;
-        gameActivity.showEndGame();
+        //removeMeteore(-1);
+    }
+
+    public void showEndGame(){
+        endGame();
+        gameActivity.showEndGameModal();
     }
 
     public int getWaveDuration(){
