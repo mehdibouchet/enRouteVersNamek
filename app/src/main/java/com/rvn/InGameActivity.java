@@ -42,6 +42,9 @@ public class InGameActivity extends AppCompatActivity {
     private EditText namePlayer;
 
     private DatabaseAdapter dbAdapter;
+
+    public final static String DB= "com.rvn.DB";
+
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -134,11 +137,11 @@ public class InGameActivity extends AppCompatActivity {
         builder.setMessage(R.string.saveScore).setPositiveButton(R.string.yes, confirmHSListener)
                 .setNegativeButton(R.string.no, confirmHSListener).show();
     }
+
     public void showEndGameActivity(){
         Intent eg= new Intent(this, HighscoreActivity.class);
         startActivity(eg);
     }
-
     public void addView(ObjectView view){ gameLayout.addView(view); }
     public void removeView(ObjectView view){ gameLayout.removeView(view); }
 

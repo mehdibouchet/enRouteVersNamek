@@ -14,9 +14,9 @@ public class Highscore{
         this.name= name; this.score= score; this.ID=ID;
     }
 
-    public String getName(){return name;}
-    public int getScore(){return score;}
-    public int getID(){return ID;}
+    public String getName(){ return name; }
+    public int getScore(){ return score; }
+    public int getID(){ return ID; }
 
     public void setName(String name){this.name= name;}
     public void setScore(int score){this.score= score;}

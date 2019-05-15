@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseAdapter {
 
@@ -50,9 +49,9 @@ public class DatabaseAdapter {
     }
 
 
-    public List<Highscore> getBestHighscore() { return getBestHighscore(5); }
-    public List<Highscore> getBestHighscore(int nb){
-        List<Highscore> Highscores = new ArrayList<Highscore>();
+    public ArrayList<Highscore> getBestHighscore() { return getBestHighscore(5); }
+    public ArrayList<Highscore> getBestHighscore(int nb){
+        ArrayList<Highscore> Highscores = new ArrayList<>();
         Cursor c =  mDB.query(HIGHSCORE_TABLE_NAME,
                 new String[] {HIGHSCORE_COL_ID, HIGHSCORE_COL_NAME, HIGHSCORE_COL_SCORE},
                 null,
@@ -75,11 +74,11 @@ public class DatabaseAdapter {
 
     public void addHighscore(Highscore hs){
         ContentValues values = new ContentValues();
-        values.put(HIGHSCORE_COL_NAME, hs.getName());
-        values.put(HIGHSCORE_COL_SCORE, hs.getScore());
+            values.put(HIGHSCORE_COL_NAME, hs.getName());
+            values.put(HIGHSCORE_COL_SCORE, hs.getScore());
         mDB.insert(HIGHSCORE_TABLE_NAME, null, values);
     }
-    public int removeClient(int id) {
+    public int removeHighscore(int id) {
         return mDB.delete(HIGHSCORE_TABLE_NAME, HIGHSCORE_COL_ID + " = " + id, null);
     }
 }

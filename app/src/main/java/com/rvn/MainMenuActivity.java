@@ -3,14 +3,11 @@ package com.rvn;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
 import android.view.View;
 
 public class MainMenuActivity extends AppCompatActivity {
-    public static int WIDTH, HEIGHT;
-    public static String TAG="MainMenuActivity";
     @Override
-
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.menu_main_layout);
