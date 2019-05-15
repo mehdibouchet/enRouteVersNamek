@@ -99,6 +99,27 @@ public class Game {
         }
     }
 
+    public int getMaxMeteore(){
+        int maxMeteore;
+        switch(niveau){
+            case 1: maxMeteore= 5;  break;
+            case 2: maxMeteore= 7;  break;
+            case 3: maxMeteore= 8;  break;
+            default: maxMeteore= 9; break;
+        }
+        return (int) Math.floor( Math.random()*(maxMeteore)+1);
+    }
+    public int getChoice(){
+        int maxChoise;
+        switch(niveau){
+            case 1: maxChoise=1;    break;
+            case 2: maxChoise=2;    break;
+            case 3: maxChoise=3;    break;
+            default: maxChoise= 3;  break;
+        }
+        return (int) Math.floor( Math.random()*maxChoise );
+    }
+
     public boolean hasCollision(){ return hasCollision(vaisseau); }
     public boolean hasCollision(ObjectView m){
         for(int i=0; i<meteores.size(); i++){
@@ -108,16 +129,28 @@ public class Game {
         return false;
     }
     public void updateLevel(){
-        if( score > 20 && niveau == 1)
-            niveau++;
-        if( score > 45 && niveau == 2)  niveau++;
-        //if( score > 70 && niveau == 3)  niveau++;
+        if( score > 20 && niveau == 1)          niveau++;
+        else if( score > 45 && niveau == 2)     niveau++;
+        else if( score > 70 && niveau == 3)     niveau++;
+        updateMeteoresSpeed();
     }
+
     public void clearAnimation() {
         for (int i = 0; i < meteores.size(); i++) {
             Meteores m = meteores.get(i);
             m.clearAnimation();
         }
+    }
+    public void updateMeteoresSpeed(){
+        double sp;
+        switch(niveau){
+            case 1: sp= 1;  break;
+            case 2: sp= 1.5;  break;
+            case 3: sp= 2;  break;
+            default: sp= 2.5; break;
+        }
+        for(int i=0; i< meteores.size(); i++)
+            meteores.get(i).updateSpeed(sp);
     }
     public void updateMeteoresPosition(){
         for(int i=0; i<meteores.size();i++){
@@ -128,9 +161,9 @@ public class Game {
     }
     public void endGame(){
         state= false; chrono.stop();
-        //timer.cancel(); timer=null;
+        timer.cancel();// timer=null;
         clearAnimation();
-        //removeMeteore(-1);
+        removeMeteore(-1);
     }
 
     public void showEndGame(){
@@ -141,9 +174,19 @@ public class Game {
     public int getWaveDuration(){
         int ms;
         switch(niveau){
-            case 1:   ms= 5000; break;//ms= (int) Math.floor( Math.random()*999 +1 ); break;   //0-1000ms
-            case 2:   ms= 2000; break;//(int) Math.floor( 2*(Math.random()*999* +1 ) ); break;   //0-2000ms
+            case 1:   ms= 5000; break;
+            case 2:   ms= 2000; break;
             case 3:   ms= 1000; break;
+            default:  ms= 1500; break;
+        }
+        return ms;
+    }
+    public int getRotateMs(){
+        int ms;
+        switch(niveau){
+            case 1:   ms= 3000; break;
+            case 2:   ms= 2500; break;
+            case 3:   ms= 2000; break;
             default:  ms= 1500; break;
         }
         return ms;

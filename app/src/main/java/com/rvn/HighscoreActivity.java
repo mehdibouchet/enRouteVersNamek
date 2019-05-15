@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -37,15 +39,26 @@ public class HighscoreActivity extends AppCompatActivity {
         mListView.setAdapter(hsAdapter);
 
         replayButton= new ImageView(this);
-        replayButton.setImageResource(R.drawable.playagain);
-        replayButton.setBackgroundColor(Color.RED);
-        //replayButton.setLayoutParams(new RelativeLayout.LayoutParams(this));
+        replayButton.setBackgroundResource(R.drawable.playagain);
+        RelativeLayout.LayoutParams layoutParams =
+                new RelativeLayout.LayoutParams(800,400);
+        replayButton.setLayoutParams(layoutParams);
         replayButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) { tryAgain(); }
         });
-        mListView.addFooterView(replayButton);
+        //replayButton.align(Gravity.CENTER);
+
+
+        LinearLayout replayLayout = new LinearLayout(this);
+        replayLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        replayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        replayLayout.addView(replayButton);
+
+        mListView.addFooterView(replayLayout);
         //repaint();
     }
 
@@ -54,6 +67,8 @@ public class HighscoreActivity extends AppCompatActivity {
     }
     public void removeScore(int hsID){
         dbAdapter.removeHighscore(hsID);
+        hsAdapter = new HighscoreAdapter(this, dbAdapter.getBestHighscore(), this);
+        mListView.setAdapter(hsAdapter);
         repaint();
     }
 

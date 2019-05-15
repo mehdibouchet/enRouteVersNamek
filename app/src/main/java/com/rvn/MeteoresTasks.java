@@ -12,8 +12,6 @@ public class MeteoresTasks extends TimerTask {
     private int choiceTask;
     private int nbMeteores;
     private int ms;
-    private int updatePosition;
-    private int i;
     final private int PAUSE_ALEA= 1500;
 
     private boolean taskBeingRunning;
@@ -22,12 +20,10 @@ public class MeteoresTasks extends TimerTask {
         this.game= game;
         this.taskBeingRunning= false;
         this.handler= handler;
-        this.updatePosition= 0;
-        i=1;
     }
     private void initNewTask(){
-        choiceTask= 0;  //(int) Math.floor( Math.random()*3 );
-        nbMeteores= 5;  //(int) Math.floor( Math.random()*(game.getMaxMeteore())+1 );
+        choiceTask= 0;  game.getChoice();
+        nbMeteores= 5;  game.getMaxMeteore();
         ms= game.getWaveDuration();
     }
 
@@ -51,10 +47,8 @@ public class MeteoresTasks extends TimerTask {
     @Override
     public void run() {
         if (game.state && !taskBeingRunning){
-             //handler.removeCallbacksAndMessages(null);
             initNewTask();
             startTask();
-            i++;
         }
     }
 

@@ -13,11 +13,15 @@ import static java.lang.Math.sqrt;
 
 public class Meteores extends ObjectView {
     public float speed, size;
-
+    private RotateAnimation rotate;
+    private int rotateMs;
     public Meteores(Game g, float sp, float size){
         super(mContext, g, R.drawable.meteore, (int) size*150, (int) size*150);
-        this.size= size; this.speed= sp;
-        startRotation(4000);
+        this.size= size; this.speed= sp; this.rotate = new RotateAnimation(0, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        this.rotateMs= g.getRotateMs();
+        initRotate();
 
         final Meteores met= this;
         this.setOnClickListener(new OnClickListener() {
@@ -36,8 +40,8 @@ public class Meteores extends ObjectView {
         boolean is_top_or_left_pop=     ( ((int) (Math.random() * 2)) == 1);
 
         float x,y;
-        float randX= (float)(Math.random()*(WIDTH/2));
-        float randY= (float)(Math.random()*(HEIGHT/2));
+        float randX= (float)(Math.random()*(WIDTH/3));
+        float randY= (float)(Math.random()*(HEIGHT/3));
 
         if(is_left_and_right_pop){
             //Si le meteore pop a gauche
@@ -76,15 +80,16 @@ public class Meteores extends ObjectView {
             return true;
         return false;
     }
-
-    public void startRotation(int ms){
-        RotateAnimation rotate = new RotateAnimation(0, 360f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(ms);
+    public void updateSpeed(double sp){
+        this.speed= (float) sp;
+        setRotate( game.getRotateMs() );
+    }
+    public void initRotate(){
+        rotate.setDuration(rotateMs);
         rotate.setRepeatCount(Animation.INFINITE); rotate.setInterpolator(new LinearInterpolator());
         startAnimation(rotate);
     }
+    private void setRotate(int ms){ rotate.setDuration(ms); }
 }
 
 /*
