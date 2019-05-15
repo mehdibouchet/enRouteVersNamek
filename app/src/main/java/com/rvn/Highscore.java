@@ -8,10 +8,11 @@ public class Highscore{
     private int ID;
 
     public Highscore(String name, int score){
-        this(name,score,-1);
+        this(-1, name,score);
     }
-    public Highscore(String name, int score, int ID){
-        this.name= name; this.score= score; this.ID=ID;
+    public Highscore(int ID, String name, int score){
+        this.name= name;
+        this.score= score; this.ID=ID;
     }
 
     public String getName(){ return name; }

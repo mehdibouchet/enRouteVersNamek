@@ -109,7 +109,8 @@ public class InGameActivity extends AppCompatActivity {
         showLevel(); showScore();
     }
     private void saveHighscore(){
-        Highscore highscore= new Highscore( namePlayer.getText().toString(), g.getScore() );
+        String name= namePlayer.getText().toString();
+        Highscore highscore= new Highscore( name, g.getScore() );
         dbAdapter.open();
         dbAdapter.addHighscore(highscore);
     }

@@ -62,8 +62,8 @@ public class DatabaseAdapter {
         c.moveToFirst();
         while(!c.isAfterLast()){
             Highscores.add( new Highscore(
-                            c.getString(0),
-                            c.getInt(1),
+                            c.getInt(0),
+                            c.getString(1),
                             c.getInt(2)
                     )
             );

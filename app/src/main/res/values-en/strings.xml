@@ -4,6 +4,7 @@
     <string name="chrono">Time</string>
     <string name="level">Level</string>
     <string name="score">Score</string>
+    <string name="name">Pseudo: </string>
     <string name="saveScore">Save your score ?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
