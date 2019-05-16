@@ -4,7 +4,7 @@ import android.os.Handler;
 
 import java.util.TimerTask;
 
-public class MeteoresTasks extends TimerTask {
+public class MeteoresWaveManager extends TimerTask {
     private Game game;
     private final Handler handler;
     private int choiceTask;
@@ -14,7 +14,7 @@ public class MeteoresTasks extends TimerTask {
 
     private boolean taskBeingRunning;
 
-    public MeteoresTasks(Game game, Handler handler) {
+    public MeteoresWaveManager(Game game, Handler handler) {
         this.game= game;
         this.taskBeingRunning= false;
         this.handler= handler;

@@ -48,7 +48,7 @@ public class Game {
     }
 
     private void runMeteoresManager() {
-        MeteoresTasks metTask= new MeteoresTasks(this, handler);
+        MeteoresWaveManager metTask= new MeteoresWaveManager(this, handler);
         timer.scheduleAtFixedRate(metTask, 0, 10);
     }
     private void runUpdateManager(){
