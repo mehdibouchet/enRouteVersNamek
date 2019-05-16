@@ -8,13 +8,15 @@ import android.view.animation.RotateAnimation;
 import static com.rvn.InGameActivity.HEIGHT;
 import static com.rvn.InGameActivity.WIDTH;
 import static com.rvn.InGameActivity.mContext;
-import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 
 public class Meteores extends ObjectView {
     public float speed, size;
-    private RotateAnimation rotate;
     private int rotateMs;
+
+    private RotateAnimation rotate;
+
+
     public Meteores(Game g, float sp, float size){
         super(mContext, g, R.drawable.meteore, (int) size*150, (int) size*150);
         this.size= size; this.speed= sp; this.rotate = new RotateAnimation(0, 360f,
@@ -23,17 +25,19 @@ public class Meteores extends ObjectView {
         this.rotateMs= g.getRotateMs();
         initRotate();
 
+        do
+            generatePosition();
+        while(g.hasCollision(this));
+
         final Meteores met= this;
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) { clearAnimation(); game.onClickMeteore(met); }
         });
-
-        do
-            generatePosition();
-        while(g.hasCollision(this));
     }
-    public Meteores(Game g){  this(g,1,1);  }
+    public Meteores(Game g){
+        this(g,1,1);
+    }
 
     public void generatePosition(){
         boolean is_left_and_right_pop=  ( ((int) (Math.random() * 3)) == 1);
@@ -71,14 +75,6 @@ public class Meteores extends ObjectView {
         float yPos = y + ( (float) ((normy)*speed ));
 
         setPosition(xPos, yPos);
-    }
-    public boolean isOut(){
-        if( y-h/2 > HEIGHT ||
-                y+h/2 < 0 ||
-                x+w/2 < 0 ||
-                x-w/2 > WIDTH)
-            return true;
-        return false;
     }
     public void updateSpeed(double sp){
         this.speed= (float) sp;

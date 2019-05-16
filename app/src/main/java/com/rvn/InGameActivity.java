@@ -68,6 +68,11 @@ public class InGameActivity extends AppCompatActivity {
         g= new Game(this, handler, chronoView);
         startGame();
         }
+
+    private void startGame(){
+        g.startGame();
+        showLevel(); showScore();
+    }
     private void setListeners(){
         confirmHSListener= new DialogInterface.OnClickListener() {
             @Override
@@ -89,31 +94,6 @@ public class InGameActivity extends AppCompatActivity {
             }
         };
     }
-    private void showSaveNameModal(){
-        builder.setMessage(getString(R.string.saveName))
-                .setPositiveButton(R.string.save,saveHSListener)
-                .setNegativeButton(R.string.cancel, saveHSListener);
-
-        namePlayer = new EditText(mContext);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        namePlayer.setLayoutParams(lp);
-        builder.setView(namePlayer);
-
-        builder.show();
-    }
-
-    private void startGame(){
-        g.startGame();
-        showLevel(); showScore();
-    }
-    private void saveHighscore(){
-        String name= namePlayer.getText().toString();
-        Highscore highscore= new Highscore( name, g.getScore() );
-        dbAdapter.open();
-        dbAdapter.addHighscore(highscore);
-    }
     public void setGameViews(){
         scoreView= new TextView(this);
         scoreView.setText(R.string.chrono); scoreView.setTextColor(Color.WHITE);
@@ -134,17 +114,45 @@ public class InGameActivity extends AppCompatActivity {
         gameLayout.addView(chronoView);
     }
 
+    public void updateMeteoresPosition(){
+        runOnUiThread(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                g.updateMeteoresPosition();
+            }
+        });
+    }
+    private void saveHighscore(){
+        String name= namePlayer.getText().toString();
+        Highscore highscore= new Highscore( name, g.getScore() );
+        dbAdapter.open();
+        dbAdapter.addHighscore(highscore);
+    }
+
     public void showEndGameModal(){
         builder.setMessage(R.string.saveScore).setPositiveButton(R.string.yes, confirmHSListener)
                 .setNegativeButton(R.string.no, confirmHSListener).show();
     }
+    private void showSaveNameModal(){
+        builder.setMessage(getString(R.string.saveName))
+                .setPositiveButton(R.string.save,saveHSListener)
+                .setNegativeButton(R.string.cancel, saveHSListener);
 
+        namePlayer = new EditText(mContext);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        namePlayer.setLayoutParams(lp);
+        builder.setView(namePlayer);
+
+        builder.show();
+    }
     public void showEndGameActivity(){
         Intent eg= new Intent(this, HighscoreActivity.class);
         startActivity(eg);
     }
-    public void addView(ObjectView view){ gameLayout.addView(view); }
-    public void removeView(ObjectView view){ gameLayout.removeView(view); }
+
+
 
     public void showScore(){
         String text= getString(R.string.score)+"\n"+g.getScore(); scoreView.setText( text );
@@ -152,8 +160,12 @@ public class InGameActivity extends AppCompatActivity {
     public void showLevel(){
         String text= getString(R.string.level)+"\n"+g.getLevel(); levelView.setText( text );
     }
+
+    public void addView(ObjectView view){ gameLayout.addView(view); }
+    public void removeView(ObjectView view){ gameLayout.removeView(view); }
+
     public void repaint(){
-        runOnUiThread(new TimerTask() {
+        runOnUiThread(new java.util.TimerTask() {
             @Override
             public void run() {
                 gameLayout.invalidate();
@@ -162,14 +174,7 @@ public class InGameActivity extends AppCompatActivity {
          });
     }
 
-    public void updateMeteoresPosition(){
-        runOnUiThread(new TimerTask() {
-            @Override
-            public void run() {
-                g.updateMeteoresPosition();
-            }
-        });
-    }
+
     public static void resizeImage(ImageView image, int w, int h) {
         Drawable dr= image.getDrawable();
         w= pixelsToDp(w); h= pixelsToDp(h);

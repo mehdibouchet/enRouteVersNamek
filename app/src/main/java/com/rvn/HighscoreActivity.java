@@ -1,13 +1,10 @@
 package com.rvn;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,8 +45,6 @@ public class HighscoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) { tryAgain(); }
         });
-        //replayButton.align(Gravity.CENTER);
-
 
         LinearLayout replayLayout = new LinearLayout(this);
         replayLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -59,7 +54,6 @@ public class HighscoreActivity extends AppCompatActivity {
         replayLayout.addView(replayButton);
 
         mListView.addFooterView(replayLayout);
-        //repaint();
     }
 
     public void removeScore(Highscore hs){
@@ -74,22 +68,8 @@ public class HighscoreActivity extends AppCompatActivity {
 
     private void tryAgain(){ Intent g= new Intent(this, InGameActivity.class); startActivity(g); }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Highscore hs = hsAdapter.getItem(menuInfo.position);
-        switch(item.getItemId()) {
-            /*
-            case R.id.replayButton:
-                deleteScore(hs)
-                return true;
-            case R.id.action_quit:
-                tryAgain();
-                return true;*/
-        }
-        return super.onOptionsItemSelected(item);
-    }
     private void repaint(){ mListView.invalidate(); }
+
     @Override
     public void onDestroy() {
         dbAdapter.close();

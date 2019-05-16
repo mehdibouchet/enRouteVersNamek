@@ -44,8 +44,14 @@ public abstract class ObjectView extends View {
         init(g,img, h, w); setPosition(x,y);
     }
 
-    protected void setImage(Bitmap img){ this.img= img; int w= img.getWidth(); int h= img.getHeight(); setSize(h,w); }
-    protected void setImage(int img){ setImage(BitmapFactory.decodeResource(getResources(), img)); }
+    protected void setImage(Bitmap img){
+        this.img= img;
+        int w= img.getWidth(); int h= img.getHeight();
+        setSize(h,w);
+    }
+    protected void setImage(int img){
+        setImage(BitmapFactory.decodeResource(getResources(), img));
+    }
 
     protected void setSize(int h, int w){
         RelativeLayout.LayoutParams newParams= new RelativeLayout.LayoutParams( params );
@@ -68,12 +74,16 @@ public abstract class ObjectView extends View {
     public boolean hasCollision(ObjectView m){                                   //méthode pour savoir si le vaisseau touche un météore
     float vx= m.x; float vy= m.y;
         int vw= m.w, vh= m.h;
-        if(x+w/2>vx-vw/2
-                && x-w/2<vx+vw/2
-                && y+h/2>vy-vh/2
-                && y-h/2<vy+vh/2)
-            return true;
-        return false;
+        return x + w / 2 > vx - vw / 2
+                && x - w / 2 < vx + vw / 2
+                && y + h / 2 > vy - vh / 2
+                && y - h / 2 < vy + vh / 2;
+    }
+    public boolean isOut(){
+        return y - h / 2 > HEIGHT ||
+                y + h / 2 < 0 ||
+                x + w / 2 < 0 ||
+                x - w / 2 > WIDTH;
     }
 
     public void repaint(){ this.invalidate(); }

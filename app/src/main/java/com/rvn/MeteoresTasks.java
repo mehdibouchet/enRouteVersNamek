@@ -1,8 +1,6 @@
 package com.rvn;
 
 import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 
 import java.util.TimerTask;
 
@@ -21,9 +19,10 @@ public class MeteoresTasks extends TimerTask {
         this.taskBeingRunning= false;
         this.handler= handler;
     }
+
     private void initNewTask(){
-        choiceTask= 0;  game.getChoice();
-        nbMeteores= 5;  game.getMaxMeteore();
+        choiceTask= game.getChoice();
+        nbMeteores= game.getMaxMeteore();
         ms= game.getWaveDuration();
     }
 
@@ -35,6 +34,7 @@ public class MeteoresTasks extends TimerTask {
             case 0: runContinueMeteoreTask(ms, nbMeteores); break;
             case 1: runEveryMeteoreTask(nbMeteores); break;
             case 2: runAleatoireMeteoreTask(ms, nbMeteores); break;
+            default:runAleatoireMeteoreTask(ms, nbMeteores); break;
         }
 
         handler.postDelayed(new Runnable(){
@@ -42,14 +42,6 @@ public class MeteoresTasks extends TimerTask {
             public void run() { taskBeingRunning= false; }
         }, pauseBetweenWaves);
 
-    }
-
-    @Override
-    public void run() {
-        if (game.state && !taskBeingRunning){
-            initNewTask();
-            startTask();
-        }
     }
 
     private void runContinueMeteoreTask(int seconde, final int nbMeteores){
@@ -64,13 +56,17 @@ public class MeteoresTasks extends TimerTask {
         for(int i=1;i<=nbMeteores;i++)
             handler.postDelayed(addMeteoreTask, i*oneInterval);
     }
-    private void runEveryMeteoreTask(final int nbMeteores){ handler.post(new Runnable(){
+
+    private void runEveryMeteoreTask(final int nbMeteores){
+        handler.post(new Runnable(){
         @Override
         public void run() { game.addMeteore(nbMeteores); }
         });
     }
 
-    private void runAleatoireMeteoreTask(int seconde, int nbMeteores){ runAleatoireMeteoreTask(seconde, nbMeteores,0); }
+    private void runAleatoireMeteoreTask(int seconde, int nbMeteores){
+        runAleatoireMeteoreTask(seconde, nbMeteores,0);
+    }
     private void runAleatoireMeteoreTask(int seconde, int nbMeteores, int i){
         final int choiceTask= (int) Math.floor( Math.random()*2 );
         final int choiceNbMeteore= (seconde<500 ? nbMeteores : (int) Math.floor( Math.random()*(nbMeteores)+1 ) );
@@ -91,4 +87,11 @@ public class MeteoresTasks extends TimerTask {
         if(seconde > 500) runAleatoireMeteoreTask(seconde - choiceSeconde, nbMeteores - choiceNbMeteore, i + 1);
     }
 
+    @Override
+    public void run() {
+        if (game.state && !taskBeingRunning){
+            initNewTask();
+            startTask();
+        }
+    }
 }

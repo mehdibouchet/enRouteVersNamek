@@ -1,7 +1,5 @@
 package com.rvn;
 
-import java.util.List;
-
 public class Highscore{
     private String name;
     private int score;
